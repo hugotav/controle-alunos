@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Perfis</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container">
+        <h1 class="my-4">Lista de Perfis</h1>
+        <a th:href="@{/perfis/novo}" class="btn btn-primary mb-3">Novo Perfil</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="perfil : ${perfis}">
+                    <td th:text="${perfil.tipo}">Tipo</td>
+                    <td>
+                        <a th:href="@{/perfis/{id}(id=${perfil.id})}" class="btn btn-info btn-sm">Detalhes</a>
+                        <a th:href="@{/perfis/{id}/editar(id=${perfil.id})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/perfis/{id}/deletar(id=${perfil.id})}" class="btn btn-danger btn-sm">Deletar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

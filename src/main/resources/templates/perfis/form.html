@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulário de Perfil</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container">
+        <h1 class="my-4" th:text="${perfil.id} == null ? 'Novo Perfil' : 'Editar Perfil'">Formulário de Perfil</h1>
+        <form th:action="@{/perfis}" th:object="${perfil}" method="post">
+            <input type="hidden" th:field="*{id}"/>
+            <div class="form-group">
+                <label for="tipo">Tipo:</label>
+                <input type="text" id="tipo" th:field="*{tipo}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="/perfis" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

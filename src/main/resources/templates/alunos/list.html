@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Alunos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4">Lista de Alunos</h1>
+    <a href="/alunos/novo" class="btn btn-primary mb-3">Novo Aluno</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CPF</th>
+                <th>Perfil</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="aluno : ${alunos}">
+                <td th:text="${aluno.nome}">Nome</td>
+                <td th:text="${aluno.email}">Email</td>
+                <td th:text="${aluno.cpf}">CPF</td>
+                <td th:text="${aluno.perfil.tipo}">Perfil</td>
+                <td>
+                    <a th:href="@{/alunos/{id}(id=${aluno.id})}" class="btn btn-info btn-sm">Detalhes</a>
+                    <a th:href="@{/alunos/{id}/editar(id=${aluno.id})}" class="btn btn-warning btn-sm">Editar</a>
+                    <a th:href="@{/alunos/{id}/deletar(id=${aluno.id})}" class="btn btn-danger btn-sm">Deletar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
