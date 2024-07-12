@@ -5,26 +5,27 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-    <h1 class="my-4">Detalhes do Aluno</h1>
-    <div>
-        <label>Nome:</label>
-        <span th:text="${aluno.nome}">Nome</span>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container">
+        <h1 class="my-4">Detalhes do Aluno</h1>
+        <div>
+            <label>Nome:</label>
+            <span th:text="${aluno.nome}">Nome</span>
+        </div>
+        <div>
+            <label>Email:</label>
+            <span th:text="${aluno.email}">Email</span>
+        </div>
+        <div>
+            <label>CPF:</label>
+            <span th:text="${aluno.cpf}">CPF</span>
+        </div>
+        <div>
+            <label>Perfil:</label>
+            <span th:text="${aluno.perfil.tipo}">Perfil</span>
+        </div>
+        <a href="/alunos" class="btn btn-secondary">Voltar</a>
     </div>
-    <div>
-        <label>Email:</label>
-        <span th:text="${aluno.email}">Email</span>
-    </div>
-    <div>
-        <label>CPF:</label>
-        <span th:text="${aluno.cpf}">CPF</span>
-    </div>
-    <div>
-        <label>Perfil:</label>
-        <span th:text="${aluno.perfil.tipo}">Perfil</span>
-    </div>
-    <a href="/alunos" class="btn btn-secondary">Voltar</a>
-</div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/alunos")
@@ -23,16 +25,26 @@ public class AlunoWebController {
 
     @GetMapping
     public String listarTodos(Model model) {
-        List<Aluno> alunos = alunoService.listarTodos();
-        model.addAttribute("alunos", alunos);
+        model.addAttribute("perfis", perfilService.listarTodos());
         return "alunos/list";
+    }
+
+    @GetMapping("/listar")
+    @ResponseBody
+    public Map<String, Object> listarAlunos(@RequestParam(required = false) String nome,
+                                            @RequestParam(required = false) String cpf,
+                                            @RequestParam(required = false) String perfil,
+                                            @RequestParam(required = false) String email) {
+        List<Aluno> alunos = alunoService.buscarAlunos(nome, cpf, perfil, email);
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", alunos);
+        return response;
     }
 
     @GetMapping("/novo")
     public String mostrarFormNovoAluno(Model model) {
         model.addAttribute("aluno", new Aluno());
-        List<Perfil> perfis = perfilService.listarTodos();
-        model.addAttribute("perfis", perfis);
+        model.addAttribute("perfis", perfilService.listarTodos());
         return "alunos/form";
     }
 
@@ -59,8 +71,7 @@ public class AlunoWebController {
         Aluno aluno = alunoService.buscarPorId(id);
         if (aluno != null) {
             model.addAttribute("aluno", aluno);
-            List<Perfil> perfis = perfilService.listarTodos();
-            model.addAttribute("perfis", perfis);
+            model.addAttribute("perfis", perfilService.listarTodos());
             return "alunos/form";
         }
         return "redirect:/alunos";

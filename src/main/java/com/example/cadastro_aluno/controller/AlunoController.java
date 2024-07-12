@@ -1,87 +1,73 @@
-// package com.example.cadastro_aluno.controller;
+package com.example.cadastro_aluno.controller;
 
-// import com.example.cadastro_aluno.model.Aluno;
-// import com.example.cadastro_aluno.service.AlunoService;
-// import com.example.cadastro_aluno.service.DisciplinaService;
-// import com.example.cadastro_aluno.service.PerfilService;
+import com.example.cadastro_aluno.model.Aluno;
+import com.example.cadastro_aluno.model.Perfil;
+import com.example.cadastro_aluno.service.AlunoService;
+import com.example.cadastro_aluno.service.PerfilService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-// import java.util.List;
+@RestController
+@RequestMapping("/api/alunos") // URL base para os endpoints da API
+public class AlunoController {
 
-// import org.springframework.stereotype.Controller;
-// import org.springframework.ui.Model;
+    @Autowired
+    private AlunoService alunoService;
 
-// @Controller
-// @RequestMapping("/alunos")
-// public class AlunoController {
+    @Autowired
+    private PerfilService perfilService;
 
-//     @Autowired
-//     private AlunoService alunoService;
-//     @Autowired
-//     private DisciplinaService disciplinaService;
-//     @Autowired
-//     private PerfilService perfilService;
+    // Endpoint para listar todos os alunos com parâmetros de filtro
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> listarAlunos(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpf,
+            @RequestParam(required = false) String perfil,
+            @RequestParam(required = false) String email) {
 
-//     @GetMapping
-//     public String listarTodos(Model model) {
-//         List<Aluno> alunos = alunoService.listarTodos();
-//         model.addAttribute("alunos", alunos);
-//         model.addAttribute("template", "alunos/list");
-//         return "layout";
-//     }
+        List<Aluno> alunos = alunoService.buscarAlunos(nome, cpf, perfil, email);
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", alunos);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-//     @GetMapping("/novo")
-//     public String mostrarFormNovoAluno(Model model) {
-//         model.addAttribute("aluno", new Aluno());
-//         model.addAttribute("disciplinas", disciplinaService.listarTodos());
-//         model.addAttribute("perfis", perfilService.listarTodos());
-//         model.addAttribute("template", "alunos/form");
-//         return "layout";
-//     }
+    // Endpoint para buscar um aluno por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Aluno> buscarAlunoPorId(@PathVariable Long id) {
+        Aluno aluno = alunoService.buscarPorId(id);
+        if (aluno != null) {
+            return new ResponseEntity<>(aluno, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
-//     @PostMapping
-//     public String criarAluno(@ModelAttribute Aluno aluno) {
-//         alunoService.salvar(aluno);
-//         return "redirect:/alunos";
-//     }
+    // Endpoint para criar um novo aluno
+    @PostMapping
+    public ResponseEntity<Aluno> criarAluno(@RequestBody Aluno aluno) {
+        alunoService.salvar(aluno);
+        return new ResponseEntity<>(aluno, HttpStatus.CREATED);
+    }
 
-//     @GetMapping("/{id}")
-//     public String mostrarDetalhes(@PathVariable Long id, Model model) {
-//         Aluno aluno = alunoService.buscarPorId(id);
-//         if (aluno != null) {
-//             model.addAttribute("aluno", aluno);
-//             model.addAttribute("template", "alunos/details");
-//             return "layout";
-//         }
-//         return "redirect:/alunos";
-//     }
+    // Endpoint para atualizar um aluno existente
+    @PutMapping("/{id}")
+    public ResponseEntity<Aluno> atualizarAluno(
+            @PathVariable Long id,
+            @RequestBody Aluno aluno) {
+        aluno.setId(id);
+        alunoService.salvar(aluno);
+        return new ResponseEntity<>(aluno, HttpStatus.OK);
+    }
 
-//     @GetMapping("/{id}/editar")
-//     public String mostrarFormEdicao(@PathVariable Long id, Model model) {
-//         Aluno aluno = alunoService.buscarPorId(id);
-//         if (aluno != null) {
-//             model.addAttribute("aluno", aluno);
-//             model.addAttribute("disciplinas", disciplinaService.listarTodos());
-//             model.addAttribute("perfis", perfilService.listarTodos());
-//             model.addAttribute("template", "alunos/form");
-//             return "layout";
-//         }
-//         return "redirect:/alunos";
-//     }
-
-//     @PostMapping("/{id}/editar")
-//     public String atualizarAluno(@PathVariable Long id, @ModelAttribute Aluno aluno) {
-//         aluno.setId(id);
-//         alunoService.salvar(aluno);
-//         return "redirect:/alunos";
-//     }
-
-//     @GetMapping("/{id}/deletar")
-//     public String deletarAluno(@PathVariable Long id) {
-//         alunoService.deletarPorId(id);
-//         return "redirect:/alunos";
-//     }
-// }
+    // Endpoint para deletar um aluno por ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarAluno(@PathVariable Long id) {
+        alunoService.deletarPorId(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}

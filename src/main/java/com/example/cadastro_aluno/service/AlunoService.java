@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class AlunoService {
@@ -18,16 +17,19 @@ public class AlunoService {
         return alunoRepository.findAll();
     }
 
-    public Aluno salvar(Aluno aluno) {
-        return alunoRepository.save(aluno);
-    }
-
     public Aluno buscarPorId(Long id) {
         return alunoRepository.findById(id).orElse(null);
+    }
+
+    public void salvar(Aluno aluno) {
+        alunoRepository.save(aluno);
     }
 
     public void deletarPorId(Long id) {
         alunoRepository.deleteById(id);
     }
 
+    public List<Aluno> buscarAlunos(String nome, String cpf, String perfil, String email) {
+        return alunoRepository.buscarAlunos(nome, cpf, perfil, email);
+    }
 }

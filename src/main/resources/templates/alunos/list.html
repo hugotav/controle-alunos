@@ -3,38 +3,97 @@
 <head>
     <title>Lista de Alunos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<div class="container">
-    <h1 class="my-4">Lista de Alunos</h1>
-    <a href="/alunos/novo" class="btn btn-primary mb-3">Novo Aluno</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>CPF</th>
-                <th>Perfil</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="aluno : ${alunos}">
-                <td th:text="${aluno.nome}">Nome</td>
-                <td th:text="${aluno.email}">Email</td>
-                <td th:text="${aluno.cpf}">CPF</td>
-                <td th:text="${aluno.perfil.tipo}">Perfil</td>
-                <td>
-                    <a th:href="@{/alunos/{id}(id=${aluno.id})}" class="btn btn-info btn-sm">Detalhes</a>
-                    <a th:href="@{/alunos/{id}/editar(id=${aluno.id})}" class="btn btn-warning btn-sm">Editar</a>
-                    <a th:href="@{/alunos/{id}/deletar(id=${aluno.id})}" class="btn btn-danger btn-sm">Deletar</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    
+    <div th:replace="sidebar :: sidebar"></div>
+    <div class="content">
+        <div class="container">
+            <h1 class="my-4">Lista de Alunos</h1>
+            <a href="/alunos/novo" class="btn btn-primary mb-3">Novo Aluno</a>
+
+            <div class="form-row mb-3">
+                <div class="col">
+                    <input type="text" id="nome" class="form-control" placeholder="Nome">
+                </div>
+                <div class="col">
+                    <input type="text" id="cpf" class="form-control" placeholder="CPF">
+                </div>
+                <div class="col">
+                    <input type="text" id="perfil" class="form-control" placeholder="Perfil">
+                </div>
+                <div class="col">
+                    <input type="text" id="email" class="form-control" placeholder="Email">
+                </div>
+            </div>
+
+            <table id="alunosTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>CPF</th>
+                        <th>Perfil</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr th:each="aluno : ${alunos}">
+                        <td th:text="${aluno.nome}">Nome</td>
+                        <td th:text="${aluno.email}">Email</td>
+                        <td th:text="${aluno.cpf}">CPF</td>
+                        <td th:text="${aluno.perfil}">Perfil</td>
+                        <td>
+                            <a th:href="@{/alunos/{id}(id=${aluno.id})}" class="btn btn-info btn-sm">Detalhes</a>
+                            <a th:href="@{/alunos/{id}/editar(id=${aluno.id})}" class="btn btn-warning btn-sm">Editar</a>
+                            <a th:href="@{/alunos/{id}/deletar(id=${aluno.id})}" class="btn btn-danger btn-sm">Deletar</a>
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#alunosTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "/alunos/listar",
+                    "dataSrc": "data",
+                    "data": function (d) {
+                        d.nome = $('#nome').val();
+                        d.cpf = $('#cpf').val();
+                        d.perfil = $('#perfil').val();
+                        d.email = $('#email').val();
+                    }
+                },
+                "columns": [
+                    { "data": "nome" },
+                    { "data": "email" },
+                    { "data": "cpf" },
+                    { "data": "perfil.tipo" },
+                    { 
+                        "data": "id",
+                        "render": function(data, type, row) {
+                            return '<a href="/alunos/' + data + '" class="mx-2" title="Detalhes"><i class="fas fa-eye"></i></a>' +
+                                   '<a href="/alunos/' + data + '/editar" class="mx-2" title="Editar"><i class="fas fa-pencil-alt"></i></a>' +
+                                   '<a href="/alunos/' + data + '/deletar" class="mx-2" title="Deletar"><i class="fas fa-trash-alt"></i></a>';
+                        }
+                    }
+                ]
+            });
+
+            // Reload table data based on search inputs
+            $('#nome, #cpf, #perfil, #email').on('keyup', function() {
+                table.ajax.reload();
+            });
+        });
+    </script>
 </body>
 </html>
